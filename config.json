@@ -1,0 +1,15 @@
+{
+    "dataSources": [
+        {
+            "name": "Gamestop",
+            "urls": [
+                "https://www.gamestop.com/video-games/playstation-5/consoles/products/playstation-5-digital-edition/11108141.html"
+            ],
+            "elementSearch": "#add-to-cart",
+            "positiveValue": {
+                "search": "innerText",
+                "value": "add to cart"
+            }
+        }
+    ]
+}

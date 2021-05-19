@@ -1,11 +1,23 @@
 const Apify = require('apify');
+require('dotenv').config();
+const fs = require('fs');
+const parser = require('./src/parser');
 
-// Get the HTML of a web page
-async function asd() {
-    const { body } = await Apify.utils.requestAsBrowser({
-        url: 'https://www.example.com',
+const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+
+config.dataSources.forEach(async (source) => {
+    console.log(`Looking up console availability for ${source.name}...`);
+
+    const mappedUrls = parser.mapUrls(source.urls);
+    const requestList = new Apify.RequestList({
+        sources: mappedUrls,
     });
-    console.log(body);
-}
+    await requestList.initialize();
 
-asd();
+    const crawler = new Apify.CheerioCrawler({
+        requestList,
+        handlePageFunction: parser.handlePageFunctionCreator(source),
+    });
+
+    await crawler.run();
+});
